@@ -9,6 +9,7 @@ import com.jobapplication.restgeoreceiver.mapper.GeolocationMapper;
 import com.jobapplication.restgeoreceiver.service.DeviceDBService;
 import com.jobapplication.restgeoreceiver.service.GeolocationDBService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,10 +40,15 @@ public class GeolocationController {
         return mapper.mapToGeolocationDtoList(geolocationDBService.getDeviceGeolocations(deviceId));
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/geolocations")
-    public GeolocationDto createGeolocation(@RequestParam double latitude, @RequestParam double longitude, @RequestParam Long deviceId)
+    @RequestMapping(method = RequestMethod.POST, value = "/geolocations", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public GeolocationDto createGeolocation(@RequestBody GeolocationDto geolocationDto)
             throws DeviceNotFoundException {
-        Device device = deviceDBService.getDevice(deviceId).orElseThrow(DeviceNotFoundException::new);
-        return mapper.mapToGeolocationDto(geolocationDBService.saveGeolocation(new Geolocation(latitude,longitude,device)));
+
+        Device device = deviceDBService.getDevice(geolocationDto.getDevice().getDeviceId())
+                .orElseThrow(DeviceNotFoundException::new);
+
+        return mapper.mapToGeolocationDto(geolocationDBService
+                .saveGeolocation(new Geolocation(geolocationDto
+                        .getLatitude(),geolocationDto.getLongitude(),device)));
     }
 }

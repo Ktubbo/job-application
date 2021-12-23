@@ -1,6 +1,5 @@
 package com.jobapplication.restgeoreceiver.domain;
 
-import com.jobapplication.restgeoreceiver.domain.Device;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

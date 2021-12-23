@@ -11,5 +11,4 @@ public class DeviceDto {
 
     private Long deviceId;
     private String deviceName;
-
 }

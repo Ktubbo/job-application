@@ -14,5 +14,4 @@ public class GeolocationDto {
     private double latitude;
     private double longitude;
     private Device device;
-
 }

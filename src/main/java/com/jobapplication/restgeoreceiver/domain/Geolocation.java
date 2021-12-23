@@ -22,14 +22,20 @@ public class Geolocation {
 
     @Column(name = "latitude")
     @NotNull
-    private Long latitude;
+    private double latitude;
 
     @Column(name = "longitude")
     @NotNull
-    private Long longitude;
+    private double longitude;
 
     @OneToOne
     @NotNull
     @JoinColumn(name = "device_id")
     private Device device;
+
+    public Geolocation(double latitude, double longitude, Device device) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.device = device;
+    }
 }

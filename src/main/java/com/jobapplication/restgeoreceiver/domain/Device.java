@@ -19,7 +19,7 @@ public class Device {
     @Id
     @GeneratedValue
     @NotNull
-    @Column(name = "device_id")
+    @Column(name = "id")
     private Long deviceId;
 
     @Column(name = "device_name")

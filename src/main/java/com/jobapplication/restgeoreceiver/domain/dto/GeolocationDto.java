@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 public class GeolocationDto {
 
     private Long id;
-    private Long latitude;
-    private Long longitude;
+    private double latitude;
+    private double longitude;
     private Device device;
 
 }

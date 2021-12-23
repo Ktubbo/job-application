@@ -2,6 +2,7 @@ package com.jobapplication.restgeoreceiver.domain;
 
 import com.jobapplication.restgeoreceiver.domain.Device;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -9,6 +10,7 @@ import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
 @Entity
 public class Geolocation {
 

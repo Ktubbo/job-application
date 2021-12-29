@@ -1,30 +1,59 @@
 package com.jobapplication.stripeimplementation;
 
+import com.stripe.Stripe;
+import com.stripe.exception.StripeException;
+import com.stripe.model.Customer;
 import com.stripe.model.Invoice;
+import com.stripe.model.Price;
+import com.stripe.model.Product;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 class StripeServiceTests {
 
-    private static final String testCustomerId = "cus_Kr3RabA24yE8qd";
-    private static final String stripeTestPriceId = "price_1KBLWNEwd6gE3PUT6TezK6WU";
-
     @InjectMocks
     private StripeService stripeService;
 
-    private static StripeCustomer customer;
-    private static StripeItem item;
+    private static Customer customer;
+    private static String customerId;
+    private static Price price;
     
     @BeforeAll
     static void beforeAll() {
-        customer = new StripeCustomer(testCustomerId,"Jan","Kowalski");
-        item = new StripeItem("Test item",stripeTestPriceId);
+
+        Stripe.apiKey = System.getenv("stripe_secret_test_key");
+
+        Map<String, Object> customerParams = new HashMap<>();
+        customerParams.put("name", "Jan Kowalski");
+
+        Map<String, Object> productParams = new HashMap<>();
+        productParams.put("name", "Gold Special");
+
+        try {
+            customer = Customer.create(customerParams);
+            customerId = customer.getId();
+
+            Product product = Product.create(productParams);
+
+            Map<String, Object> priceParams = new HashMap<>();
+            priceParams.put("unit_amount", 2000);
+            priceParams.put("currency", "pln");
+            priceParams.put("product", product.getId());
+
+            price = Price.create(priceParams);
+
+        } catch (StripeException e) {
+            e.printStackTrace();
+        }
     }
     
     @Test
@@ -34,7 +63,7 @@ class StripeServiceTests {
 
         //When
         try {
-            stripeService.createInvoiceItem(item,customer);
+            stripeService.createInvoiceItem(price,customer);
             invoice = stripeService.createInvoice(customer);
 
         } catch (Exception e) {
@@ -42,7 +71,7 @@ class StripeServiceTests {
         }
 
         //Then
-        assertEquals("cus_Kr3RabA24yE8qd",invoice.getCustomer());
+        assertEquals(customerId,invoice.getCustomer());
     }
 
     @Test
@@ -54,7 +83,7 @@ class StripeServiceTests {
         String resultInvoiceId = "";
 
         try {
-            stripeService.createInvoiceItem(item,customer);
+            stripeService.createInvoiceItem(price,customer);
             invoice = stripeService.createInvoice(customer);
             invoiceId = invoice.getId();
         } catch (Exception e) {

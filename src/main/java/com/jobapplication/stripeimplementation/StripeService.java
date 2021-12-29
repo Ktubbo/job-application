@@ -2,8 +2,10 @@ package com.jobapplication.stripeimplementation;
 
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
+import com.stripe.model.Customer;
 import com.stripe.model.Invoice;
 import com.stripe.model.InvoiceItem;
+import com.stripe.model.Price;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +21,9 @@ public class StripeService {
     private final String stripeTestKey = System.getenv("stripe_secret_test_key");
     private final Logger logger = LoggerFactory.getLogger(StripeService.class);
 
-    public Invoice createInvoice(StripeCustomer customer) throws StripeException {
+    public Invoice createInvoice(Customer customer) throws StripeException {
         Map<String,Object> parameters = new HashMap<>();
-        parameters.put("customer",customer.getCustomerId());
+        parameters.put("customer",customer.getId());
 
         Stripe.apiKey = stripeTestKey;
         logger.info("Invoice created.");
@@ -34,10 +36,10 @@ public class StripeService {
         return Invoice.retrieve(invoiceId);
     }
 
-    public void createInvoiceItem(StripeItem item, StripeCustomer customer) throws StripeException{
+    public void createInvoiceItem(Price price, Customer customer) throws StripeException{
         Map<String, Object> invoiceItemParameters = new HashMap<>();
-        invoiceItemParameters.put("customer", customer.getCustomerId());
-        invoiceItemParameters.put("price", item.getPriceId());
+        invoiceItemParameters.put("customer", customer.getId());
+        invoiceItemParameters.put("price", price.getId());
 
         Stripe.apiKey = stripeTestKey;
         logger.info("Invoice item created.");
